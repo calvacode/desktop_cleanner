@@ -1,34 +1,46 @@
 package com.estudo.usecases.rules;
 
-import com.estudo.util.MatchPattern;
+import com.estudo.util.FileExtension;
 
 import java.io.File;
-import java.util.List;
+import java.io.InvalidObjectException;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.function.Function;
 
 import static java.lang.String.format;
 
-public class OrganizeFilesRule implements Rule {
+public class OrganizeFilesRule implements OrganizeRule {
 
-    private final List<String> filePattern;
-
-    public OrganizeFilesRule(final List<String> filePattern) {
-        this.filePattern = filePattern;
+    public void run(final File origin, final File destiny, Function<String, Boolean> match) {
+        if (origin.isDirectory() && destiny.isDirectory()) {
+            apply(origin, destiny, match);
+        }
     }
 
-    @Override
-    public void run(final File fileDirectory) {
+    private void apply(final File fileDirectory, final File rootDirectory, Function<String, Boolean> match) {
         if (Objects.nonNull(fileDirectory) && Objects.nonNull(fileDirectory.listFiles())) {
             for (File file : fileDirectory.listFiles()) {
                 if (file.isDirectory()) {
-                    this.run(new File(file.getAbsolutePath()));
-                } else if (MatchPattern.match(filePattern, file.getName())) {
-                    
-                    file.
-                    file.renameTo(new File());
+                    this.apply(new File(file.getAbsolutePath()), rootDirectory, match);
+                } else if (match.apply(file.getName())) {
+                    final String fileExtension = getFileExtension(file);
+                    if (Arrays.stream(rootDirectory.listFiles()).filter(File::isDirectory).noneMatch(f -> f.getName().equals(fileExtension))){
+                        new File(rootDirectory.getAbsolutePath().concat("/").concat(fileExtension)).mkdir();
+                    }
+                    file.renameTo(new File(rootDirectory.getAbsolutePath().concat("/").concat(fileExtension).concat("/").concat(file.getName())));
                     System.out.println(format("%s pattern was move", file.getName()));
                 }
             }
+        }
+
+    }
+
+    private String getFileExtension(final File file) {
+        try {
+            return FileExtension.get(file);
+        } catch (InvalidObjectException | FileExtension.UnknownExtensionException e) {
+            return "UNKNOWN";
         }
     }
 

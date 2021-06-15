@@ -24,4 +24,10 @@ public class MatchPattern {
         }
         return false;
     }
+
+    public static boolean unMatch(final List<String> patterns, final String name) {
+        return !match(patterns, name);
+    }
+
+
 }

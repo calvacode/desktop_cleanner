@@ -1,16 +1,24 @@
 package com.estudo;
 
-import com.estudo.rules.RemoveRule;
+import com.estudo.gateway.imply.FileConfigurationImpl;
+import com.estudo.usecases.rules.OrganizeFilesRule;
+import com.estudo.usecases.rules.RemoveEmptyDirectoriesRule;
+import com.estudo.util.MatchPattern;
 
 import java.io.File;
+import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        final File fileDirectory = new File("/Users/douglas.calvancante/Desktop/teste_remove");
-        final RemoveRule applyRemoveRule = new RemoveRule();
+        final List<String> patternList = new FileConfigurationImpl().get("./resource/organize");
 
-        applyRemoveRule.run(fileDirectory);
+        final File origin = new File("/Users/douglas.calvancante/Desktop/asc");
+        final File destiny = new File("/Users/douglas.calvancante/Desktop");
+
+//        new OrganizeFilesRule().run(origin, destiny, (fileName) -> MatchPattern.match(patternList, fileName));
+
+        new RemoveEmptyDirectoriesRule().run(origin, (fileName) -> MatchPattern.match(patternList, fileName));
     }
 }
