@@ -1,7 +1,6 @@
-package com.estudo.rules;
+package com.estudo.usecases.rules;
 
 import com.estudo.util.MatchPattern;
-import com.estudo.util.ReadConfig;
 
 import java.io.File;
 import java.util.List;
@@ -9,11 +8,13 @@ import java.util.Objects;
 
 import static java.lang.String.format;
 
-public class RemoveRule implements Rule {
+public class OrganizeFilesRule implements Rule {
 
-    private static final String CONFIG_NAME = "resource/files_to_remove";
+    private final List<String> filePattern;
 
-    private final static List<String> patterList = ReadConfig.read(CONFIG_NAME);
+    public OrganizeFilesRule(final List<String> filePattern) {
+        this.filePattern = filePattern;
+    }
 
     @Override
     public void run(final File fileDirectory) {
@@ -21,11 +22,11 @@ public class RemoveRule implements Rule {
             for (File file : fileDirectory.listFiles()) {
                 if (file.isDirectory()) {
                     this.run(new File(file.getAbsolutePath()));
-                } else {
-                    if (MatchPattern.match(patterList, file.getName())) {
-//                        file.deleteOnExit();
-                        System.out.println(format("%s pattern was remove", file.getName()));
-                    }
+                } else if (MatchPattern.match(filePattern, file.getName())) {
+                    
+                    file.
+                    file.renameTo(new File());
+                    System.out.println(format("%s pattern was move", file.getName()));
                 }
             }
         }
