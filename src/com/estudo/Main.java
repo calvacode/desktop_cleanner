@@ -14,10 +14,10 @@ public class Main {
 
         final List<String> patternList = new FileConfigurationImpl().get("./resource/organize");
 
-        final File origin = new File("/Users/douglas.calvancante/Desktop/asc");
+        final File origin = new File("/Users/douglas.calvancante/Downloads");
         final File destiny = new File("/Users/douglas.calvancante/Desktop");
 
-//        new OrganizeFilesRule().run(origin, destiny, (fileName) -> MatchPattern.match(patternList, fileName));
+        new OrganizeFilesRule().run(origin, destiny, (fileName) -> MatchPattern.match(patternList, fileName));
 
         new RemoveEmptyDirectoriesRule().run(origin, (fileName) -> MatchPattern.match(patternList, fileName));
     }
